@@ -16,27 +16,54 @@ export interface AmountProps {
   thumbColor: string;
   filledColor: string;
   onChange?: (amount: number) => void;
+  startLimit?: number;
 }
 
+// UPDATE: set start limit here
+// Update: Need to add startlimit into Context
 export function Amount({
   amount,
   thumbColor,
   filledColor,
   onChange,
 }: AmountProps) {
-  const {center, clockwise} = useSliderContext();
+  const {center, clockwise, startLimit, enabled} = useSliderContext();
   const {total} = useTickMarkContext();
+  const _amount: number = startLimit + amount;
 
-  const zeroTheta = useSharedValue(amount2Theta(0, total, clockwise));
-  const theta = useSharedValue(amount2Theta(amount, total, clockwise));
+  // const zeroTheta = useSharedValue(amount2Theta(0, total, clockwise));
+  const zeroTheta = useSharedValue(amount2Theta(startLimit, total, clockwise));
+  const theta = useSharedValue(amount2Theta(_amount, total, clockwise));
+
+  // Validate change according to the startLimit;
+  // Handle All custom functionality here;
+  function validateLimit(delta: number) {
+    'worklet';
+
+    const updTheta = normalize(theta.value + delta);
+    const updValue = theta2Amount(updTheta, total, clockwise);
+    const isValid = updValue >= Math.round(updValue) && updValue > startLimit;
+    return {
+      updValue: Math.round(updValue),
+      updTheta,
+      isValid,
+    };
+  }
 
   const onGestureActive = ({x, y}: Vector, context: GestureContext) => {
     'worklet';
+    if (!enabled) return;
     if (context.target.value?.curr) {
       const {theta: newTheta} = canvas2Polar({x, y}, center.value);
       const delta = newTheta - context.offset;
-      theta.value = normalize(theta.value + delta);
-      context.offset = newTheta;
+      const {isValid, updTheta, updValue} = validateLimit(delta);
+      if (isValid) {
+        theta.value = updTheta;
+        context.offset = newTheta;
+        if (onChange) {
+          runOnJS(onChange)(updValue);
+        }
+      }
     }
   };
 
@@ -44,9 +71,9 @@ export function Amount({
     'worklet';
     context.target.value = null;
 
-    if (onChange) {
-      runOnJS(onChange)(theta2Amount(theta.value, total, clockwise));
-    }
+    // if (onChange) {
+    //   runOnJS(onChange)(theta2Amount(theta.value, total, clockwise));
+    // }
   };
 
   return (

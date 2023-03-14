@@ -25,9 +25,8 @@ export function Container({
   onGestureEnd,
   children,
 }: ContainerProps) {
-  const {size, r, center, clockwise, trackWidth} = useSliderContext();
-  const {show, total, unit, color, showText, thickness, length} =
-    useTickMarkContext();
+  const {size, r, center, InnerComponent} = useSliderContext();
+  const {show} = useTickMarkContext();
   const {icons} = useThumbContext();
 
   const target = useSharedValue<GestureThumbs | null>(null);
@@ -39,25 +38,15 @@ export function Container({
     context.target = target;
   };
 
+  console.log(typeof InnerComponent);
+  // UPDATE: InnerComponent Updates From Here
   return (
     <>
       <Canvas size={size}>
         <Track />
         {show && (
-          <TickMark
-            {...{
-              r,
-              center,
-              clockwise,
-              trackWidth,
-              total,
-              unit,
-              color,
-              showText,
-              thickness,
-              length,
-            }}
-          />
+          //  @ts-ignore
+          <InnerComponent />
         )}
         {children}
       </Canvas>

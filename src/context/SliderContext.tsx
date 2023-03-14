@@ -19,6 +19,7 @@ interface SliderContext {
   clockwise: boolean;
   tickMarkOptions: Required<TickMarkOptions>;
   thumbOptions: Required<ThumbOptions>;
+  InnerComponent?: React.ReactNode;
 }
 
 const SliderContext = createContext<SliderContext | null>(null);
@@ -29,6 +30,7 @@ export interface SliderContextProviderProps {
   tickMarkOptions: Required<TickMarkOptions>;
   thumbOptions: Required<ThumbOptions>;
   children?: React.ReactNode;
+  InnerComponent?: React.ReactNode;
 }
 
 export default function SliderContextProvider({
@@ -37,6 +39,9 @@ export default function SliderContextProvider({
   tickMarkOptions,
   thumbOptions,
   children,
+  InnerComponent,
+  startLimit,
+  enabled,
 }: SliderContextProviderProps) {
   const {size, clockwise} = sliderOptions;
   const {width, color} = trackOptions;
@@ -65,6 +70,9 @@ export default function SliderContextProvider({
         trackColor: color,
         tickMarkOptions,
         thumbOptions,
+        InnerComponent,
+        startLimit,
+        enabled,
       }}>
       {children}
     </SliderContext.Provider>

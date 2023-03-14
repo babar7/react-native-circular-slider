@@ -31,5 +31,6 @@ export function Thumb({color, theta}: ThumbProps) {
     };
   }, [position]);
 
-  return <AnimatedCircle animatedProps={animatedProps} fill={color} />;
+  // UPDATE: Change Thumb stroke color and width
+  return <AnimatedCircle animatedProps={animatedProps} fill={color} stroke={'#fff'} strokeWidth={2}/>;
 }
