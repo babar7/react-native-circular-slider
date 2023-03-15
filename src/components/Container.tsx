@@ -38,7 +38,6 @@ export function Container({
     context.target = target;
   };
 
-  console.log(typeof InnerComponent);
   // UPDATE: InnerComponent Updates From Here
   return (
     <>

@@ -1,6 +1,6 @@
 import React from 'react';
 import {canvas2Polar, Vector} from 'react-native-redash';
-import {runOnJS, useSharedValue} from 'react-native-reanimated';
+import {runOnJS, useSharedValue, withTiming} from 'react-native-reanimated';
 
 import {
   useSliderContext,
@@ -16,6 +16,7 @@ export interface AmountProps {
   thumbColor: string;
   filledColor: string;
   onChange?: (amount: number) => void;
+  onChangeActive?: (amount: number) => void;
   startLimit?: number;
 }
 
@@ -26,14 +27,32 @@ export function Amount({
   thumbColor,
   filledColor,
   onChange,
+  onChangeActive
 }: AmountProps) {
   const {center, clockwise, startLimit, enabled} = useSliderContext();
   const {total} = useTickMarkContext();
   const _amount: number = startLimit + amount;
 
-  // const zeroTheta = useSharedValue(amount2Theta(0, total, clockwise));
   const zeroTheta = useSharedValue(amount2Theta(startLimit, total, clockwise));
   const theta = useSharedValue(amount2Theta(_amount, total, clockwise));
+
+
+  // Updating startLimit on change
+  React.useEffect(()=>{
+    const startTheta = amount2Theta(startLimit, total, clockwise);
+    const endTheta = amount2Theta(_amount, total, clockwise);
+
+    zeroTheta.value = withTiming(startTheta, {duration : 500});
+    theta.value = withTiming(endTheta, {duration : 500});
+
+  },[startLimit]);
+
+  // Updating endLimit on change
+  React.useEffect(()=>{
+    const endTheta = amount2Theta(amount, total, clockwise);
+    theta.value = withTiming(endTheta, {duration : 500});
+
+  },[amount]);
 
   // Validate change according to the startLimit;
   // Handle All custom functionality here;
@@ -60,8 +79,8 @@ export function Amount({
       if (isValid) {
         theta.value = updTheta;
         context.offset = newTheta;
-        if (onChange) {
-          runOnJS(onChange)(updValue);
+        if (onChangeActive) {
+          runOnJS(onChangeActive)(updValue);
         }
       }
     }
@@ -71,9 +90,9 @@ export function Amount({
     'worklet';
     context.target.value = null;
 
-    // if (onChange) {
-    //   runOnJS(onChange)(theta2Amount(theta.value, total, clockwise));
-    // }
+    if (onChange) {
+      runOnJS(onChange)(theta2Amount(theta.value, total, clockwise));
+    }
   };
 
   return (

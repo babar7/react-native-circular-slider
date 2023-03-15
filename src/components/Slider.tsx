@@ -15,6 +15,8 @@ export interface GaugeProps extends SliderOptions {
   thumbOptions: Required<ThumbOptions>;
   children?: React.ReactNode;
   InnerComponent?: React.ReactNode;
+  startLimit?: number;
+  enabled?: boolean;
 }
 
 export default function Slider({
