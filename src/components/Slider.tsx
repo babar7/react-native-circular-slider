@@ -41,6 +41,7 @@ export default function Slider({
     showText = show,
     textSize = 10,
     textColor = '#191919',
+    showThumb  = true,
   } = tickMarkOptions;
   return (
     <SliderContextProvider
@@ -56,11 +57,12 @@ export default function Slider({
         showText,
         textSize,
         textColor,
+        showThumb,
       }}
       InnerComponent={InnerComponent}
       thumbOptions={thumbOptions}
       startLimit={startLimit}
-      enabled={  enabled      }
+      enabled={enabled}
       >
       <View style={[styles.container, {width: size, height: size}]}>
         {children}

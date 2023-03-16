@@ -30,7 +30,7 @@ export function Amount({
   onChangeActive
 }: AmountProps) {
   const {center, clockwise, startLimit, enabled} = useSliderContext();
-  const {total} = useTickMarkContext();
+  const {total, showThumb} = useTickMarkContext();
   const _amount: number = startLimit + amount;
 
   const zeroTheta = useSharedValue(amount2Theta(startLimit, total, clockwise));
@@ -105,7 +105,7 @@ export function Amount({
         startTheta={zeroTheta}
         endTheta={theta}
       />
-      <Thumb theta={theta} color={thumbColor} />
+      {showThumb && <Thumb theta={theta} color={thumbColor} />}
     </Container>
   );
 }

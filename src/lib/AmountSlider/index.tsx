@@ -16,7 +16,7 @@ export interface AmountSliderProps extends SliderOptions {
   trackOptions?: TrackOptions;
   tickMarkOptions?: TickMarkOptions;
   InnerComponent?: any;
-  enabled ? : boolean
+  enabled ? : boolean;
 }
 
 // UPDATE: update props here
@@ -33,9 +33,8 @@ export function AmountSlider({
   tickMarkOptions = {},
   InnerComponent = View,
   startLimit = 0,
-  enabled = true 
+  enabled = true,
 }: AmountSliderProps) {
-
 
   return (
     <Slider

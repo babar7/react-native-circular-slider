@@ -39,4 +39,5 @@ export type TickMarkOptions = {
   showText?: boolean;
   textSize?: number;
   textColor?: string;
+  showThumb?: boolean;
 };
